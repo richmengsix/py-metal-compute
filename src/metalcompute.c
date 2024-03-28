@@ -742,6 +742,11 @@ Run_dealloc(Run *self)
 {
     if (self->run_handle.id != 0) {
         mc_sw_run_close(&(self->run_handle));
+        // HACK: https://neucrack.com/p/340. Should decrease reference after run complete due to PyTuple_SetItem
+        for (int i = 0; i < buffer_count; i++) {
+            PyObject* tuple_buf_obj = PyTuple_GetItem(self->tuple_bufs, i);
+            Py_DECREF(tuple_buf_obj);
+        }
         Py_DECREF(self->tuple_bufs);
         Py_DECREF(self->fn_obj);
     }

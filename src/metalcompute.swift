@@ -492,16 +492,18 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 
         // Completion handler - will run later
         commandBuffer.addCompletedHandler { cb in
+            var cbIdsToRemove = [Int]()
             for (cb_id, sw_cb) in mc_cbs {
                 if sw_cb.cb === cb {
                     sw_cb.running = false
-                    // Could call back to python here...
-                    // HACK: Modified here for memory leak. In theory we can always remove here?
-                    // if sw_cb.released {
-                        mc_cbs.removeValue(forKey:cb_id)
-                    // }
-                    return
+                    // Add cb_id to the list of ids to remove
+                    cbIdsToRemove.append(cb_id)
+                    // You can perform any additional actions here
                 }
+            }
+            // Remove cb_ids after the iteration is complete
+            for cb_id in cbIdsToRemove {
+                mc_cbs.removeValue(forKey: cb_id)
             }
         }
 

@@ -336,8 +336,7 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 
 @_cdecl("mc_sw_dev_close") public func mc_sw_dev_close(handle: UnsafeMutablePointer<mc_dev_handle>) -> RetCode {
     guard let sw_dev = mc_devs[handle[0].id] else { return DeviceNotFound }
-    // HACK TEST Remove buf guard.
-    // guard sw_dev.bufs.count == 0 else { return DeviceBuffersAllocated }
+    guard sw_dev.bufs.count == 0 else { return DeviceBuffersAllocated }
     mc_devs.removeValue(forKey: handle[0].id)
     return Success
 }
@@ -493,18 +492,15 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 
         // Completion handler - will run later
         commandBuffer.addCompletedHandler { cb in
-            var cbIdsToRemove = [Int]()
             for (cb_id, sw_cb) in mc_cbs {
                 if sw_cb.cb === cb {
                     sw_cb.running = false
-                    // Add cb_id to the list of ids to remove
-                    cbIdsToRemove.append(cb_id)
-                    // You can perform any additional actions here
+                    // Could call back to python here...
+                    if sw_cb.released {
+                        mc_cbs.removeValue(forKey:cb_id)
+                    }
+                    return
                 }
-            }
-            // Remove cb_ids after the iteration is complete
-            for cb_id in cbIdsToRemove {
-                mc_cbs.removeValue(forKey: cb_id)
             }
         }
 

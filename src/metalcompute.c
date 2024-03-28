@@ -727,8 +727,6 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
         return -1;
     }
 
-    free(self->run_handle.bufs);
-
     self->fn_obj = fn_obj;
     Py_INCREF(fn_obj);
     // Keep this so that we have reference to all argument objects
@@ -747,8 +745,10 @@ Run_dealloc(Run *self)
             PyObject* tuple_buf_obj = PyTuple_GetItem(self->tuple_bufs, i);
             Py_DECREF(tuple_buf_obj);
         }
+
         Py_DECREF(self->tuple_bufs);
         Py_DECREF(self->fn_obj);
+        free(self->run_handle.bufs);
     }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }

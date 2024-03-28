@@ -496,9 +496,10 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
                 if sw_cb.cb === cb {
                     sw_cb.running = false
                     // Could call back to python here...
-                    if sw_cb.released {
+                    // HACK: Modified here for memory leak. In theory we can always remove here?
+                    // if sw_cb.released {
                         mc_cbs.removeValue(forKey:cb_id)
-                    }
+                    // }
                     return
                 }
             }

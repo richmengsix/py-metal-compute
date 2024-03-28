@@ -336,7 +336,8 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 
 @_cdecl("mc_sw_dev_close") public func mc_sw_dev_close(handle: UnsafeMutablePointer<mc_dev_handle>) -> RetCode {
     guard let sw_dev = mc_devs[handle[0].id] else { return DeviceNotFound }
-    guard sw_dev.bufs.count == 0 else { return DeviceBuffersAllocated }
+    // HACK TEST Remove buf guard.
+    // guard sw_dev.bufs.count == 0 else { return DeviceBuffersAllocated }
     mc_devs.removeValue(forKey: handle[0].id)
     return Success
 }

@@ -586,7 +586,8 @@ Buffer_init(Buffer *self, PyObject *args, PyObject *kwds)
     self->length = length;
     self->exports = 0;
     self->dev_obj = (Device*)dev_obj;
-    Py_INCREF(dev_obj); // Cannot close device while buffer open
+    // HACK: Do not hold reference of dev
+    // Py_INCREF(dev_obj); // Cannot close device while buffer open
 
     return 0;
 }
@@ -657,7 +658,8 @@ int to_buffer(PyObject* possible_buffer, Device* dev, Buffer** buffer) {
     // 3. Something else. Return -1
     if (possible_buffer->ob_type == &BufferType) {
         *buffer = (Buffer*)possible_buffer;
-        Py_INCREF(*buffer); // Take a new reference to the existing buffer
+        // HACK Try not getting another ref
+        // Py_INCREF(*buffer); // Take a new reference to the existing buffer
         return 0;
     }
 

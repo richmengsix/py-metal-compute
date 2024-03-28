@@ -586,8 +586,7 @@ Buffer_init(Buffer *self, PyObject *args, PyObject *kwds)
     self->length = length;
     self->exports = 0;
     self->dev_obj = (Device*)dev_obj;
-    // HACK: Do not hold reference of dev
-    // Py_INCREF(dev_obj); // Cannot close device while buffer open
+    Py_INCREF(dev_obj); // Cannot close device while buffer open
 
     return 0;
 }

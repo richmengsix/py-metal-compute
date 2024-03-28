@@ -658,8 +658,7 @@ int to_buffer(PyObject* possible_buffer, Device* dev, Buffer** buffer) {
     // 3. Something else. Return -1
     if (possible_buffer->ob_type == &BufferType) {
         *buffer = (Buffer*)possible_buffer;
-        // HACK Try not getting another ref
-        // Py_INCREF(*buffer); // Take a new reference to the existing buffer
+        Py_INCREF(*buffer); // Take a new reference to the existing buffer
         return 0;
     }
 

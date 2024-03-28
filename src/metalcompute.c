@@ -657,7 +657,6 @@ int to_buffer(PyObject* possible_buffer, Device* dev, Buffer** buffer) {
     // 3. Something else. Return -1
     if (possible_buffer->ob_type == &BufferType) {
         *buffer = (Buffer*)possible_buffer;
-        Py_INCREF(*buffer); // Take a new reference to the existing buffer
         return 0;
     }
 
@@ -705,6 +704,7 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
     PyObject* tuple_bufs = PyTuple_New(buffer_count);
     for (int i = 0; i < buffer_count; i++) {
         PyObject* pos_buf = PyTuple_GetItem(arg_tuple, i+1);
+        Py_INCREF(pos_buf);
 
         Buffer* buf;
         if (to_buffer(pos_buf, fn_obj->kern_obj->dev_obj, &buf)) {
@@ -716,6 +716,7 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
         // TODO: Should check here that the buffer is from the same Metal device
         self->run_handle.bufs[i] = &(buf->buf_handle);
         PyTuple_SetItem(tuple_bufs, i, (PyObject*)buf);
+        Py_DECREF(pos_buf);
     }
 
     if (mc_err(mc_sw_run_open(
@@ -727,6 +728,7 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
         return -1;
     }
 
+    free(self->run_handle.bufs);
     self->fn_obj = fn_obj;
     Py_INCREF(fn_obj);
     // Keep this so that we have reference to all argument objects
@@ -740,12 +742,6 @@ Run_dealloc(Run *self)
 {
     if (self->run_handle.id != 0) {
         mc_sw_run_close(&(self->run_handle));
-        // HACK: https://neucrack.com/p/340. Should decrease reference after run complete due to PyTuple_SetItem
-        for (int i = 0; i < self->run_handle.buf_count; i++) {
-            PyObject* tuple_buf_obj = PyTuple_GetItem(self->tuple_bufs, i);
-            Py_DECREF(tuple_buf_obj);
-        }
-
         Py_DECREF(self->tuple_bufs);
         Py_DECREF(self->fn_obj);
     }

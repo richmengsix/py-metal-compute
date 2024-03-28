@@ -748,7 +748,6 @@ Run_dealloc(Run *self)
 
         Py_DECREF(self->tuple_bufs);
         Py_DECREF(self->fn_obj);
-        free(self->run_handle.bufs);
     }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }

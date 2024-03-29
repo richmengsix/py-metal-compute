@@ -542,6 +542,7 @@ static PyTypeObject FunctionType = {
 static int
 Buffer_init(Buffer *self, PyObject *args, PyObject *kwds)
 {
+    printf("Buffer_init\n"); // Uncomment if debugging swift code with print statements
     // Private - can only be called via device.buffer
     Device* dev_obj;
     PyObject* length_or_buffer;
@@ -594,6 +595,8 @@ Buffer_init(Buffer *self, PyObject *args, PyObject *kwds)
 static void
 Buffer_dealloc(Buffer *self)
 {   
+    printf("Buffer_dealloc\n"); // Uncomment if debugging swift code with print statements
+
     if (self->buf_handle.id != 0) {
         mc_sw_buf_close(&(self->dev_obj->dev_handle), &(self->buf_handle));
         Py_DECREF(self->dev_obj);
@@ -608,6 +611,7 @@ Buffer_str(Buffer* self)
 }
 
 int Buffer_getbuffer(Buffer *self, Py_buffer *view, int flags) {
+    printf("Buffer_getbuffer\n"); // Uncomment if debugging swift code with print statements
     view->buf = self->buf_handle.buf;
     view->obj = (PyObject*)self;
     Py_INCREF(view->obj);
@@ -626,6 +630,7 @@ int Buffer_getbuffer(Buffer *self, Py_buffer *view, int flags) {
 }
 
 int Buffer_releasebuffer(Buffer *self, Py_buffer *view, int flags) {
+    printf("Buffer_releasebuffer\n"); // Uncomment if debugging swift code with print statements
     self->exports--;
     return 0;
 }
@@ -650,6 +655,8 @@ static PyTypeObject BufferType = {
 };
 
 int to_buffer(PyObject* possible_buffer, Device* dev, Buffer** buffer) {
+    printf("to_buffer\n"); // Uncomment if debugging swift code with print statements
+
     // The input is either
     // 1. Already a metalcompute Buffer*, if so give and return 0;
     // 2. A python object which can expose a buffer
@@ -677,6 +684,8 @@ int to_buffer(PyObject* possible_buffer, Device* dev, Buffer** buffer) {
 static int
 Run_init(Run *self, PyObject *args, PyObject *kwds)
 {
+    printf("Run_init\n"); // Uncomment if debugging swift code with print statements
+
     // Private - can only be called via function.run
     Function* fn_obj;
     PyObject* arg_tuple;
@@ -743,6 +752,8 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
 static void
 Run_dealloc(Run *self)
 {
+    printf("Run_dealloc\n"); // Uncomment if debugging swift code with print statements
+
     if (self->run_handle.id != 0) {
         mc_sw_run_close(&(self->run_handle));
         Py_DECREF(self->tuple_bufs);

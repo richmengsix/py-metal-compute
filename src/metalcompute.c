@@ -597,11 +597,6 @@ Buffer_dealloc(Buffer *self)
     if (self->buf_handle.id != 0) {
         mc_sw_buf_close(&(self->dev_obj->dev_handle), &(self->buf_handle));
         Py_DECREF(self->dev_obj);
-
-        // Maybe I need to actually clean buffer here
-        // Free the memory associated with buf member
-        free(self->buf_handle.buf);
-        self->buf_handle.buf = NULL; // Optional: Set buf to NULL to avoid dangling pointer
     }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }

@@ -447,11 +447,21 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 @_cdecl("mc_sw_buf_close") public func mc_sw_buf_close(
         dev_handle: UnsafePointer<mc_dev_handle>,
         buf_handle: UnsafeMutablePointer<mc_buf_handle>) -> RetCode {
+
     guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
     guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
         return BufferNotFound
     }
+
+    // Check if buf_handle is not nil and buf is not nil
+    let bufPtr = buf_handle[0].buf
     
+    // Deallocate the memory
+    if bufPtr != nil {
+        bufPtr.deallocate()
+        buf_handle[0].buf = nil
+    }
+
     return Success
 }
 

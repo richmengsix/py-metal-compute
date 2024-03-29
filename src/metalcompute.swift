@@ -451,7 +451,7 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
     guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
         return BufferNotFound
     }
-
+    
     return Success
 }
 

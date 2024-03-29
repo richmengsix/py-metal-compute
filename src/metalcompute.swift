@@ -419,7 +419,6 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
         length:Int64,
         src_opt: UnsafeRawPointer?,
         buf_handle: UnsafeMutablePointer<mc_buf_handle>) -> RetCode {
-    print("mc_sw_buf_open called")
     guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
     var newBuffer:MTLBuffer
     if let src = src_opt {
@@ -448,24 +447,10 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 @_cdecl("mc_sw_buf_close") public func mc_sw_buf_close(
         dev_handle: UnsafePointer<mc_dev_handle>,
         buf_handle: UnsafeMutablePointer<mc_buf_handle>) -> RetCode {
-    // Check if buf_handle is not nil and buf is not nil
-    print("NEW mc_sw_buf_close called")
-
     guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
     guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
         return BufferNotFound
     }
-
-
-    // let bufPtr = buf_handle[0].buf;
-    // if bufPtr != nil {
-    //     print("mc_sw_buf_close deallocate " + buf_handle[0].id)
-    //     buf_handle[0].buf.deallocate()
-    //     buf_handle[0].buf = nil
-    //     print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
-    // }
-
-    print("NEW mc_sw_buf_close success") 
 
     return Success
 }

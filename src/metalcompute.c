@@ -822,7 +822,7 @@ void define_device_info_type() {
 PyMODINIT_FUNC
 PyInit_metalcompute(void)
 {
-    printf("(creating stdout)\n"); // Uncomment if debugging swift code with print statements
+    // printf("(creating stdout)\n"); // Uncomment if debugging swift code with print statements
 
     if (PyType_Ready(&DeviceType) < 0)
         return NULL;

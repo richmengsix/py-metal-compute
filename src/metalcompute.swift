@@ -453,6 +453,13 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
     guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
         return BufferNotFound
     }
+    let bufPtr = buf_handle[0].buf;
+    if bufPtr != nil {
+        print("mc_sw_buf_close deallocate " + buf_handle[0].id)
+        buf_handle[0].buf.deallocate()
+        buf_handle[0].buf = nil
+        print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
+    }
     print("NEW mc_sw_buf_close success")
     return Success
 }
@@ -496,6 +503,7 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
         commandBuffer.addCompletedHandler { cb in
             for (cb_id, sw_cb) in mc_cbs {
                 if sw_cb.cb === cb {
+                    print("Complete callback for " + cb_id)
                     sw_cb.running = false
                     // Could call back to python here...
                     if sw_cb.released {

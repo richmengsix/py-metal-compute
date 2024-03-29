@@ -715,7 +715,7 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
 
         // TODO: Should check here that the buffer is from the same Metal device
         self->run_handle.bufs[i] = &(buf->buf_handle);
-        PyTuple_SetItem(tuple_bufs, i, (PyObject*)buf);
+        PyTuple_SetItem(tuple_bufs, i, (PyObject*)buf); // Takes ownership of buf
     }
 
     if (mc_err(mc_sw_run_open(
@@ -723,10 +723,11 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
         &(fn_obj->kern_obj->kern_handle),
         &(fn_obj->fn_handle),
         &(self->run_handle)))) {
+        free(self->run_handle.bufs.buf);
         free(self->run_handle.bufs);
         return -1;
     }
-
+    free(self->run_handle.bufs.buf);
     free(self->run_handle.bufs);
 
     self->fn_obj = fn_obj;
@@ -816,7 +817,7 @@ void define_device_info_type() {
 PyMODINIT_FUNC
 PyInit_metalcompute(void)
 {
-    //printf("(creating stdout)\n"); // Uncomment if debugging swift code with print statements
+    printf("(creating stdout)\n"); // Uncomment if debugging swift code with print statements
 
     if (PyType_Ready(&DeviceType) < 0)
         return NULL;

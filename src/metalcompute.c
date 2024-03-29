@@ -729,11 +729,12 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
         &(fn_obj->fn_handle),
         &(self->run_handle)))) {
         free(self->run_handle.bufs);
+        self->run_handle.bufs = NULL;
         return -1;
     }
 
     free(self->run_handle.bufs);
-
+    self->run_handle.bufs = NULL;
     self->fn_obj = fn_obj;
     Py_INCREF(fn_obj);
     // Keep this so that we have reference to all argument objects

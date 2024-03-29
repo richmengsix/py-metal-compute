@@ -600,10 +600,8 @@ Buffer_dealloc(Buffer *self)
 
         // Maybe I need to actually clean buffer here
         // Free the memory associated with buf member
-        free(self->buf_handle->buf);
-        self->buf_handle->buf = NULL; // Optional: Set buf to NULL to avoid dangling pointer
-        // Free the mc_buf_handle itself
-        free(self->buf_handle);
+        free(self->buf_handle.buf);
+        self->buf_handle.buf = NULL; // Optional: Set buf to NULL to avoid dangling pointer
     }
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
@@ -731,13 +729,13 @@ Run_init(Run *self, PyObject *args, PyObject *kwds)
         &(fn_obj->fn_handle),
         &(self->run_handle)))) {
         free(self->run_handle.bufs);
-        self->run_handle->bufs = NULL; // Optional: Set bufs to NULL to avoid dangling pointer
+        self->run_handle.bufs = NULL; // Optional: Set bufs to NULL to avoid dangling pointer
 
         return -1;
     }
 
     free(self->run_handle.bufs);
-    self->run_handle->bufs = NULL; // Optional: Set bufs to NULL to avoid dangling pointer
+    self->run_handle.bufs = NULL; // Optional: Set bufs to NULL to avoid dangling pointer
 
     self->fn_obj = fn_obj;
     Py_INCREF(fn_obj);

@@ -457,13 +457,13 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
     }
 
 
-    let bufPtr = buf_handle[0].buf;
-    if bufPtr != nil {
-        print("mc_sw_buf_close deallocate " + buf_handle[0].id)
-        buf_handle[0].buf.deallocate()
-        buf_handle[0].buf = nil
-        print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
-    }
+    // let bufPtr = buf_handle[0].buf;
+    // if bufPtr != nil {
+    //     print("mc_sw_buf_close deallocate " + buf_handle[0].id)
+    //     buf_handle[0].buf.deallocate()
+    //     buf_handle[0].buf = nil
+    //     print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
+    // }
 
     print("mc_sw_buf_close success " + buf_handle[0].id) 
 

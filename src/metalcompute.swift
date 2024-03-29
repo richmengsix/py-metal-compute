@@ -459,6 +459,8 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
         buf_handle[0].buf.deallocate()
         buf_handle[0].buf = nil
         print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
+    } else {
+        print("mc_sw_buf_close bufPtr nil ")
     }
     print("NEW mc_sw_buf_close success")
     return Success

@@ -419,6 +419,7 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
         length:Int64,
         src_opt: UnsafeRawPointer?,
         buf_handle: UnsafeMutablePointer<mc_buf_handle>) -> RetCode {
+    print("mc_sw_buf_open called")
     guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
     var newBuffer:MTLBuffer
     if let src = src_opt {
@@ -447,19 +448,15 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
 @_cdecl("mc_sw_buf_close") public func mc_sw_buf_close(
         dev_handle: UnsafePointer<mc_dev_handle>,
         buf_handle: UnsafeMutablePointer<mc_buf_handle>) -> RetCode {
+    // Check if buf_handle is not nil and buf is not nil
+    print("mc_sw_buf_close called")
+
+    buf_handle[0].buf.deallocate()
+    buf_handle[0].buf = nil
 
     guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
     guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
         return BufferNotFound
-    }
-
-    // Check if buf_handle is not nil and buf is not nil
-    let bufPtr = buf_handle[0].buf
-    
-    // Deallocate the memory
-    if bufPtr != nil {
-        bufPtr.deallocate()
-        buf_handle[0].buf = nil
     }
 
     return Success

@@ -451,16 +451,18 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
     // Check if buf_handle is not nil and buf is not nil
     print("mc_sw_buf_close called " + buf_handle[0].id)
 
+    guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
+    guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
+        return BufferNotFound
+    }
+
+
     let bufPtr = buf_handle[0].buf;
     if bufPtr != nil {
         print("mc_sw_buf_close deallocate " + buf_handle[0].id)
         buf_handle[0].buf.deallocate()
         buf_handle[0].buf = nil
         print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
-    }
-    guard let sw_dev = mc_devs[dev_handle[0].id] else { return DeviceNotFound }
-    guard sw_dev.bufs.removeValue(forKey: buf_handle[0].id) != nil else {
-        return BufferNotFound
     }
 
     print("mc_sw_buf_close success " + buf_handle[0].id) 

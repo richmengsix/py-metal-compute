@@ -455,10 +455,10 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
     }
     let bufPtr = buf_handle[0].buf;
     if bufPtr != nil {
-        print("mc_sw_buf_close deallocate " + buf_handle[0].id)
+        print("mc_sw_buf_close deallocate ")
         buf_handle[0].buf.deallocate()
         buf_handle[0].buf = nil
-        print("mc_sw_buf_close deallocate success " + buf_handle[0].id)
+        print("mc_sw_buf_close deallocate success ")
     } else {
         print("mc_sw_buf_close bufPtr nil ")
     }
@@ -505,7 +505,7 @@ var mc_cbs:[Int64:mc_sw_cb] = [:]
         commandBuffer.addCompletedHandler { cb in
             for (cb_id, sw_cb) in mc_cbs {
                 if sw_cb.cb === cb {
-                    print("Complete callback for " + cb_id)
+                    print("Complete callback for ")
                     sw_cb.running = false
                     // Could call back to python here...
                     if sw_cb.released {
